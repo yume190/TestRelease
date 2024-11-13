@@ -1,0 +1,38 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version for release (e.g., 1.0.0)"
+        required: true
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: softprops/action-gh-release@v1
+        id: create_draft_release
+        with:
+          name: ${{ github.event.inputs.version }}
+          tag_name: ${{ github.event.inputs.version }}
+          body: Release from swift-syntax ${{ github.event.inputs.version }}
+          draft: false
+
+      - name: Update Package.swift
+        run: |
+          echo ${{ github.event.inputs.version }} >> Package.swift
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Updated for release ${{ github.event.inputs.version }}
+          tagging_message: ${{ github.event.inputs.version }}
+          file_pattern: "Package.swift"
+
+      - uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_draft_release.outputs.id }}
