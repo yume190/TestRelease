@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         id: create_draft_release
         with:
           name: ${{ github.event.inputs.version }}
