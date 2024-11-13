@@ -19,7 +19,7 @@ jobs:
           name: ${{ github.event.inputs.version }}
           tag_name: ${{ github.event.inputs.version }}
           body: Release from swift-syntax ${{ github.event.inputs.version }}
-          draft: false
+          draft: true
 
       - name: Update Package.swift
         run: |
